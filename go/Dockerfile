@@ -3,7 +3,7 @@
 {{/language.version}}
 
 {{^language.version}}
-  FROM golang:1.23
+  FROM golang:1.25
 {{/language.version}}
 
 WORKDIR /go/src/app
@@ -13,9 +13,9 @@ ENV GOOS=linux
 ENV GOARCH={{#architecture}}{{{.}}}{{/architecture}}
 
 {{#if.architecture.amd64}}
-  # This compile with v3 micoarchitecture
+  # This compile with v2 micoarchitecture
   # See https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels 
-  ENV GOAMD64=v3
+  ENV GOAMD64=v2
 {{/if.architecture.amd64}}
 
 {{#if.architecture.arm64}}
@@ -50,4 +50,8 @@ COPY --from=0 /go/bin/app /go/bin/app
   COPY '{{source}}' '{{target}}'
 {{/static_files}}
 
-CMD {{{command}}}
+RUN apt-get -qq update
+RUN apt-get -qy install curl
+HEALTHCHECK CMD curl --fail http://0.0.0.0:3000 || exit 1
+
+ENTRYPOINT {{{command}}}

@@ -1,8 +1,8 @@
 plugins {
-	id("org.springframework.boot") version "3.3.+"
+	id("org.springframework.boot") version "3.5.+"
 	id("io.spring.dependency-management") version "+"
-	kotlin("jvm") version "2.0.+"
-	kotlin("plugin.spring") version "2.0.+"
+	kotlin("jvm") version "2.2.+"
+	kotlin("plugin.spring") version "2.2.+"
 }
 
 group = "benchmark.spring-boot"

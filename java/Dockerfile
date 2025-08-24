@@ -34,7 +34,7 @@ WORKDIR /usr/src/web
   FROM eclipse-temurin:{{{.}}}-jre
 {{/language.version}}
 {{^language.version}}
-  FROM eclipse-temurin:21.0.5_11-jre
+  FROM eclipse-temurin:21.0.7_6-jre
 {{/language.version}}
 
 
@@ -59,4 +59,8 @@ RUN  ln -sfv /opt/java/openjdk/bin/java /usr/bin/java
   ENV {{{.}}}
 {{/environment}}
 
-CMD {{{command}}}
+RUN apt-get -qq update
+RUN apt-get -qy install curl
+HEALTHCHECK CMD curl --fail http://0.0.0.0:3000 || exit 1
+
+ENTRYPOINT {{{command}}}

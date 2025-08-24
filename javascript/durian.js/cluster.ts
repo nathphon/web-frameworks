@@ -1,18 +1,10 @@
-import cluster from 'cluster';
-import os from 'node:os';
-import { bootstrap } from './src/app';
+import { availableParallelism } from 'node:os';
 
-if (cluster.isPrimary) {
-  console.log(`Master ${process.pid} is running`);
-  for (let i = 0; i < os.availableParallelism(); i++) {
-    cluster.fork();
-  }
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died with code ${code} and signal ${signal}`);
-    console.log('Starting a new worker...');
-    cluster.fork();
+const numCpus = availableParallelism();
+
+for (let i = 0; i < numCpus; i++) {
+  Bun.spawn(['bun', 'src/main.ts'], {
+    stdio: ['inherit', 'inherit', 'inherit'],
+    env: { ...process.env },
   });
-} else {
-  bootstrap();
-  console.log(`Worker ${process.pid} started`);
 }
